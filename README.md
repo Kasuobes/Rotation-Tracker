@@ -1,4 +1,7 @@
 Armored Warfare PvE Mission Rotation Tracker v2 by Haswell & Wiser Guy
+=
+
+![screenshot](rotation-tracker-screenshot.png)
 
 This program requires no installation, but it does create small text files in the folder it is located in to store data 
 such as the missions on rotation, window position, and time offset.
