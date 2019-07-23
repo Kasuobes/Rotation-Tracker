@@ -67,7 +67,7 @@ Loop 10 {
 		TVar=%TVar%%A_Space%%A_Space%%A_Space%%SVar%
 		CalcVar+=30, minutes
 	}
-	CalcVar+=-417, minutes
+	CalcVar+=-777, minutes
 	Gui, Add, Text, vTimeLine%A_Index% X5 Y%yVar%, %TVar%
 	yVar+=25
 }
