@@ -88,8 +88,9 @@ Gui, Add, Edit, X5 W55 vMinBox Y%yVar% Number, %OffsetVar%
 Gui, Add, Edit, X63 W55 vSecBox Y%yVar% Number, %OffsecVar%
 yVar--
 Gui, Add, Button, X120 W295 H30 Y%yVar% gSetTimeOffset, Set Time Offset (Minutes/Seconds)
-Gui, Add, Button, X1040 W205 H30 Y%yVar% gClearList, Clear All Missions
-Gui, Add, Button, X1250 W90 H30 Y%yVar% gHelpButton, Help
+Gui, Add, Button, X945 W205 H30 Y%yVar% gClearList, Clear All Missions
+Gui, Add, Button, X1155 W90 H30 Y%yVar% gHelpButton, Help
+Gui, Add, Button, X1250 W90 H30 Y%yVar% gAboutButton, About
 IfNotExist Pos.txt
 {
 	FileAppend, 0`n, Pos.txt
@@ -97,7 +98,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W1350 H615 X%xPos% Y%yPos%, PvE Rotation Tracker by Haswell & Wiser Guy
+Gui, Show, W1350 H615 X%xPos% Y%yPos%, Armored Warfare PvE Mission Rotation Tracker
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
@@ -202,7 +203,6 @@ SetTimeOffset:
 	Transform, rVar, Mod, %newTime%, 30
 	CalcVar =
 	CalcVar += -%rVar%, minutes
-	Loop 10	{
 	TVar=
 		Loop 26 {
 			FormatTime, SVar, %CalcVar%, HH:mm
@@ -211,7 +211,6 @@ SetTimeOffset:
 		}
 		CalcVar+=-417, minutes
 		GuiControl, Text, TimeLine%A_Index%, %TVar%
-	}
 	GoSub EverySecond
 return
 
@@ -251,11 +250,28 @@ HelpButton:
 	MessageText=%MessageText%`n`nYou must press the "Clear All Missions" button when the map rotation
 	MessageText=%MessageText%`nchanges to a new set of missions in order to properly offset the time.
 	MessageText=%MessageText%`n`nEdit the Missions.txt file in order to add new missions.
-	MsgBox,,PvE Rotation Tracker by Haswell (based on v1.01 and 1.05 by Wiser Guy), %MessageText%
+	MsgBox,,Help, %MessageText%
+return
+
+AboutButton:
+	MessageText=Armored Warfare PvE Mission Rotation Tracker v2.1
+	MessageText=%MessageText%`n© 2016-2019 Wiser Guy
+	MessageText=%MessageText%`n© 2019 Haswell (Kasuobes)
+	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
+	MessageText=%MessageText%`nit under the terms of the GNU General Public License as published by
+	MessageText=%MessageText%`nthe Free Software Foundation, either version 3 of the License, or
+	MessageText=%MessageText%`n(at your option) any later version.
+	MessageText=%MessageText%`n`nThis program is distributed in the hope that it will be useful, but
+	MessageText=%MessageText%`nWITHOUT ANY WARRANTY; without even the implied warranty of
+	MessageText=%MessageText%`nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	MessageText=%MessageText%`nGNU General Public License for more details.
+	MessageText=%MessageText%`n`nYou should have received a copy of the GNU General Public License
+	MessageText=%MessageText%`nalong with this program.  If not, see <https://www.gnu.org/licenses/>.
+	MsgBox,,About, %MessageText%
 return
 
 GuiClose:
-	WinGetPos, tx, ty,,,PvE Rotation Tracker by Haswell & Wiser Guy
+	WinGetPos, tx, ty,,,Armored Warfare PvE Mission Rotation Tracker
 	FileDelete, Pos.txt
 	FileAppend, %tx%`n, Pos.txt
 	FileAppend, %ty%, Pos.txt	
