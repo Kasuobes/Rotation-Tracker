@@ -60,15 +60,11 @@ Loop 10 {
 	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W200 X1050 Y%yVar% gSaveList R50, %MissionList%
 	yVar+=3
 	Gui, Add, Text, vCD%A_Index% X1252 Y%yVar% W200, 00:00
-	yVar+=26
-	TVar=
-	Loop 26 {
-		FormatTime, SVar, %CalcVar%, HH:mm
-		TVar=%TVar%%A_Space%%A_Space%%A_Space%%SVar%
-		CalcVar+=30, minutes
-	}
+	yVar+=10
+
+
 	CalcVar+=-777, minutes
-	Gui, Add, Text, vTimeLine%A_Index% X5 Y%yVar%, %TVar%
+
 	yVar+=25
 }
 Loop, Read, MISSIONS_LOW_EASY.txt
@@ -98,7 +94,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W1350 H615 X%xPos% Y%yPos%, Armored Warfare PvE Mission Rotation Tracker
+Gui, Show, W1350 H460 X%xPos% Y%yPos%, Armored Warfare PvE Mission Rotation Tracker
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
@@ -203,14 +199,7 @@ SetTimeOffset:
 	Transform, rVar, Mod, %newTime%, 30
 	CalcVar =
 	CalcVar += -%rVar%, minutes
-	TVar=
-		Loop 26 {
-			FormatTime, SVar, %CalcVar%, HH:mm
-			TVar=%TVar%%A_Space%%A_Space%%A_Space%%SVar%
-			CalcVar+=30, minutes
-		}
-		CalcVar+=-417, minutes
-		GuiControl, Text, TimeLine%A_Index%, %TVar%
+
 	GoSub EverySecond
 return
 
@@ -254,7 +243,7 @@ HelpButton:
 return
 
 AboutButton:
-	MessageText=Armored Warfare PvE Mission Rotation Tracker v2.1
+	MessageText=Armored Warfare PvE Mission Rotation Tracker v2.1 Lite
 	MessageText=%MessageText%`n© 2016-2019 Wiser Guy
 	MessageText=%MessageText%`n© 2019 Haswell (Kasuobes)
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
