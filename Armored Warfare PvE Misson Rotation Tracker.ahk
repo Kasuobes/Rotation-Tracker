@@ -4,6 +4,8 @@ SetTitleMatchMode 2
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+global TrackerName:="Armored Warfare PvE Mission Rotation Tracker"
+
 global OffsetVar:=0	;Controls how many minutes the time is offset
 global OffsecVar:=0	;Controls how many seconds the time is offset
 IfExist Offset.txt
@@ -11,6 +13,13 @@ IfExist Offset.txt
 	FileReadLine, OffsetVar, Offset.txt, 1
 	FileReadLine, OffsecVar, Offset.txt, 2
 }
+
+global OpacityVar:=255 ;Controls window opacity
+ifExist Opacity.txt
+{
+	FileReadLine, OpacityVar, Opacity.txt, 1
+}
+
 MissionList=
 IfNotExist Missions.txt	
 {
@@ -88,7 +97,13 @@ Gui, Add, Edit, X5 W55 vMinBox Y%yVar% Number, %OffsetVar%
 Gui, Add, Edit, X63 W55 vSecBox Y%yVar% Number, %OffsecVar%
 yVar--
 Gui, Add, Button, X120 W295 H30 Y%yVar% gSetTimeOffset, Set Time Offset (Minutes/Seconds)
-Gui, Add, Button, X945 W205 H30 Y%yVar% gClearList, Clear All Missions
+
+yVar++
+Gui, Add, Edit, X727 W55 vOpacityBox Y%yVar% Number, %OpacityVar%
+yVar--
+Gui, Add, Button, X785 W180 H30 Y%yVar% gSetOpacity, Set Opacity (150-255)
+
+Gui, Add, Button, X970 W180 H30 Y%yVar% gClearList, Clear All Missions
 Gui, Add, Button, X1155 W90 H30 Y%yVar% gHelpButton, Help
 Gui, Add, Button, X1250 W90 H30 Y%yVar% gAboutButton, About
 IfNotExist Pos.txt
@@ -98,7 +113,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W1350 H615 X%xPos% Y%yPos%, Armored Warfare PvE Mission Rotation Tracker
+Gui, Show, W1350 H615 X%xPos% Y%yPos%, %TrackerName%
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
@@ -214,6 +229,27 @@ SetTimeOffset:
 	GoSub EverySecond
 return
 
+SetOpacity:
+	FileDelete, Opacity.txt
+	GuiControlGet OpacityVar,, OpacityBox
+	if(OpacityVar < 150)
+	{
+		OpacityVar:=150
+	}
+	else if(OpacityVar > 255)
+	{
+		OpacityVar:=255
+	}
+;	if(OpacityVar > 150) and (OpacityVar <= 255) ;Final sanity check
+;	{
+;		GuiControl,, OpacityBox, %OpacityVar%
+;		WinSet, Transparent, %OpacityVar%, %TrackerName%
+;	}
+	GuiControl,, OpacityBox, %OpacityVar%
+	WinSet, Transparent, %OpacityVar%, %TrackerName%
+	FileAppend, %OpacityVar%, Opacity.txt	
+return
+
 CheckLockMaps:
 	GuiControlGet, LockMaps
 	if(LockMaps)
@@ -254,7 +290,7 @@ HelpButton:
 return
 
 AboutButton:
-	MessageText=Armored Warfare PvE Mission Rotation Tracker v2.1
+	MessageText=%TrackerName% v2.2
 	MessageText=%MessageText%`n© 2016-2019 Wiser Guy
 	MessageText=%MessageText%`n© 2019 Haswell (Kasuobes)
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
@@ -271,7 +307,7 @@ AboutButton:
 return
 
 GuiClose:
-	WinGetPos, tx, ty,,,Armored Warfare PvE Mission Rotation Tracker
+	WinGetPos, tx, ty,,,%TrackerName%
 	FileDelete, Pos.txt
 	FileAppend, %tx%`n, Pos.txt
 	FileAppend, %ty%, Pos.txt	
