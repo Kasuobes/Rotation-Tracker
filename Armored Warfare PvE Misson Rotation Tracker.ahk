@@ -5,6 +5,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 global TrackerName:="Armored Warfare PvE Mission Rotation Tracker"
+global TrackerVersion:="2.2"
 
 global OffsetVar:=0	;Controls how many minutes the time is offset
 global OffsecVar:=0	;Controls how many seconds the time is offset
@@ -15,10 +16,6 @@ IfExist Offset.txt
 }
 
 global OpacityVar:=255 ;Controls window opacity
-ifExist Opacity.txt
-{
-	FileReadLine, OpacityVar, Opacity.txt, 1
-}
 
 MissionList=
 IfNotExist Missions.txt	
@@ -33,7 +30,24 @@ IfNotExist Missions.txt
 }
 Loop, Read, Missions.txt	;Missions.txt contains a list of all missions seperated by newlines
 	MissionList=%MissionList%%A_LoopReadLine%|
-Gui, Font, s12
+
+;Menu items
+
+;Menu, EditMenu, Add, &Set Time Offset, SetTimeOffsetButton
+Menu, EditMenu, Add, &Set Opacity, SetOpacityButton
+Menu, EditMenu, Add, &Clear All Missions, ClearList
+
+Menu, HelpMenu, Add, &Help, HelpButton
+Menu, HelpMenu, Add, &About, AboutButton
+
+Menu, MenuBar, Add, &Edit, :EditMenu
+Menu, MenuBar, Add, &Help, :HelpMenu
+
+Gui, Menu, MenuBar
+
+;Menu end
+
+Gui, Font, s10
 yVar:=4
 newTime := A_Hour * 60 + A_Min - OffsetVar + 150
 if(OffsecVar > 45)
@@ -42,34 +56,34 @@ Transform, rVar, Mod, %newTime%, 30
 CalcVar =
 CalcVar += -%rVar%, minutes
 
-HEADER_LOW_EASY := "Tiers 1-3 Standard"
-HEADER_LOW_HARD := "Tiers 1-3 Hardcore"
-HEADER_MID_EASY := "Tiers 4-6 Standard"
-HEADER_MID_HARD := "Tiers 4-6 Hardcore"
-HEADER_HIGH_EASY := "Tiers 7-10 Standard"
-HEADER_HIGH_HARD := "Tiers 7-10 Hardcore"
+HEADER_LOW_EASY := "T1-3 Standard"
+HEADER_LOW_HARD := "T1-3 Hardcore"
+HEADER_MID_EASY := "T4-6 Standard"
+HEADER_MID_HARD := "T4-6 Hardcore"
+HEADER_HIGH_EASY := "T7-10 Standard"
+HEADER_HIGH_HARD := "T7-10 Hardcore"
 
-Gui, Add, ComboBox, vHeader1 W200 X5 Y%yVar%, %HEADER_LOW_EASY%||
-Gui, Add, ComboBox, vHeader2 W200 X214 Y%yVar%, %HEADER_LOW_HARD%||
-Gui, Add, ComboBox, vHeader3 W200 X423 Y%yVar%, %HEADER_MID_EASY%||
-Gui, Add, ComboBox, vHeader4 W200 X632 Y%yVar%, %HEADER_MID_HARD%||
-Gui, Add, ComboBox, vHeader5 W200 X841 Y%yVar%, %HEADER_HIGH_EASY%||
-Gui, Add, ComboBox, vHeader6 W200 X1050 Y%yVar%, %HEADER_HIGH_HARD%||
+Gui, Add, ComboBox, vHeader1 W120 X5 Y%yVar%, %HEADER_LOW_EASY%||
+Gui, Add, ComboBox, vHeader2 W120 X128 Y%yVar%, %HEADER_LOW_HARD%||
+Gui, Add, ComboBox, vHeader3 W120 X250 Y%yVar%, %HEADER_MID_EASY%||
+Gui, Add, ComboBox, vHeader4 W120 X372 Y%yVar%, %HEADER_MID_HARD%||
+Gui, Add, ComboBox, vHeader5 W120 X494 Y%yVar%, %HEADER_HIGH_EASY%||
+Gui, Add, ComboBox, vHeader6 W120 X616 Y%yVar%, %HEADER_HIGH_HARD%||
 
-Gui, Add, Checkbox, vLockMaps gCheckLockMaps X1255 Y%yVar%, Lock maps
+Gui, Add, Checkbox, vLockMaps gCheckLockMaps X739 Y%yVar%, Lock lists
 
-yVar+=45
+yVar+=35
 
 Loop 10 {
-	Gui, Add, ComboBox, vLOW_EASY%A_Index% W200 X5 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vLOW_HARD%A_Index% W200 X214 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vMID_EASY%A_Index% W200 X423 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vMID_HARD%A_Index% W200 X632 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vHIGH_EASY%A_Index% W200 X841 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W200 X1050 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vLOW_EASY%A_Index% W120 X5 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vLOW_HARD%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vMID_EASY%A_Index% W120 X250 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vMID_HARD%A_Index% W120 X372 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vHIGH_EASY%A_Index% W120 X494 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W120 X616 Y%yVar% gSaveList R50, %MissionList%
 	yVar+=3
-	Gui, Add, Text, vCD%A_Index% X1252 Y%yVar% W200, 00:00
-	yVar+=10
+	Gui, Add, Text, vCD%A_Index% X739 Y%yVar% W100, 00:00
+	yVar+=5
 
 	CalcVar+=-777, minutes
 	yVar+=25
@@ -87,19 +101,11 @@ Loop, Read, MISSIONS_HIGH_EASY.txt
 Loop, Read, MISSIONS_HIGH_HARD.txt
 	GuiControl, ChooseString, HIGH_HARD%A_Index%, %A_LoopReadLine%
 yVar+=-4
-Gui, Add, Edit, X5 W55 vMinBox Y%yVar% Number, %OffsetVar%
-Gui, Add, Edit, X63 W55 vSecBox Y%yVar% Number, %OffsecVar%
+Gui, Add, Edit, X5 W30 vMinBox Y%yVar% Number, %OffsetVar%
+Gui, Add, Edit, X39 W30 vSecBox Y%yVar% Number, %OffsecVar%
 yVar--
-Gui, Add, Button, X120 W295 H30 Y%yVar% gSetTimeOffset, Set Time Offset (Minutes/Seconds)
+Gui, Add, Button, X70 W225 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Minutes/Seconds)
 
-yVar++
-Gui, Add, Edit, X727 W55 vOpacityBox Y%yVar% Number, %OpacityVar%
-yVar--
-Gui, Add, Button, X785 W180 H30 Y%yVar% gSetOpacity, Set Opacity (150-255)
-
-Gui, Add, Button, X970 W180 H30 Y%yVar% gClearList, Clear All Missions
-Gui, Add, Button, X1155 W90 H30 Y%yVar% gHelpButton, Help
-Gui, Add, Button, X1250 W90 H30 Y%yVar% gAboutButton, About
 IfNotExist Pos.txt
 {
 	FileAppend, 0`n, Pos.txt
@@ -107,7 +113,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W1350 H460 X%xPos% Y%yPos%, %TrackerName%
+Gui, Show, W820 H395 X%xPos% Y%yPos%, %TrackerName%
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
@@ -166,7 +172,7 @@ SaveList:
 	}
 return
 
-Clearlist:
+ClearList:
 	GuiControlGet, LockMaps
 	if(LockMaps)
 	{
@@ -189,6 +195,16 @@ Clearlist:
 			GuiControlGet OffsecVar,, SecBox
 	}
 return
+
+/*
+SetTimeOffsetButton:
+	InputBox, OffsetVar, Set Time Offset, Please input timer offset in seconds:
+	
+	if ErrorLevel
+		return
+	else
+
+*/
 
 SetTimeOffset:
 	FileDelete, Offset.txt
@@ -215,10 +231,24 @@ SetTimeOffset:
 	GoSub EverySecond
 return
 
-SetOpacity:
-	FileDelete, Opacity.txt
-	GuiControlGet OpacityVar,, OpacityBox
+SetOpacityButton:
+	InputBox, OpacityVar, Set Opacity, Please input an opacity value (150-255):		
 	if(OpacityVar < 150)
+	{
+		OpacityVar:=150
+	}
+	else if(OpacityVar > 255)
+	{
+		OpacityVar:=255
+	}	
+	
+	if !ErrorLevel
+		GoSub, SetOpacity
+
+return		
+
+SetOpacity:
+	if(OpacityVar < 150) ;extra sanity check
 	{
 		OpacityVar:=150
 	}
@@ -233,7 +263,6 @@ SetOpacity:
 ;	}
 	GuiControl,, OpacityBox, %OpacityVar%
 	WinSet, Transparent, %OpacityVar%, %TrackerName%
-	FileAppend, %OpacityVar%, Opacity.txt	
 return
 CheckLockMaps:
 	GuiControlGet, LockMaps
@@ -275,7 +304,7 @@ HelpButton:
 return
 
 AboutButton:
-	MessageText=%TrackerName% v2.2
+	MessageText=%TrackerName% %TrackerVersion%
 	MessageText=%MessageText%`n© 2016-2019 Wiser Guy
 	MessageText=%MessageText%`n© 2019 Haswell (Kasuobes)
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
