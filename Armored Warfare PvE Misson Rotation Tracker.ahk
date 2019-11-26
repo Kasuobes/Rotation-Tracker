@@ -73,7 +73,7 @@ Gui, Add, ComboBox, vHeader6 W120 X494 Y%yVar%, %HEADER_HIGH_HARD%||
 
 Gui, Add, Checkbox, vLockMaps gCheckLockMaps X617 Y%yVar%, Lock lists
 
-yVar+=35
+yVar+=27
 
 Loop 10 {
 	Gui, Add, ComboBox, vLOW_EASY%A_Index% W120 X5 Y%yVar% gSaveList R50, %MissionList%
@@ -87,7 +87,7 @@ Loop 10 {
 	yVar+=5
 
 	CalcVar+=-777, minutes
-	yVar+=25
+	yVar+=15
 }
 Loop, Read, MISSIONS_LOW_EASY.txt
 	GuiControl, ChooseString, LOW_EASY%A_Index%, %A_LoopReadLine%
@@ -101,7 +101,7 @@ Loop, Read, MISSIONS_HIGH_EASY.txt
 	GuiControl, ChooseString, HIGH_EASY%A_Index%, %A_LoopReadLine%
 Loop, Read, MISSIONS_HIGH_HARD.txt
 	GuiControl, ChooseString, HIGH_HARD%A_Index%, %A_LoopReadLine%
-yVar+=-4
+yVar+=2
 Gui, Add, Edit, X5 W25 vMinBox Y%yVar% Number, %OffsetVar%
 Gui, Add, Edit, X31 W25 vSecBox Y%yVar% Number, %OffsecVar%
 yVar--
@@ -114,7 +114,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W700 H395 X%xPos% Y%yPos%, %TrackerName%
+Gui, Show, W700 H290 X%xPos% Y%yPos%, %TrackerName%
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
