@@ -57,32 +57,32 @@ CalcVar =
 CalcVar += -%rVar%, minutes
 
 HEADER_LOW_EASY := "T1-3 Standard"
-HEADER_LOW_HARD := "T1-3 Hardcore"
+;HEADER_LOW_HARD := "T1-3 Hardcore"
 HEADER_MID_EASY := "T4-6 Standard"
-HEADER_MID_HARD := "T4-6 Hardcore"
+HEADER_MID_HARD := "T3-6 Hardcore"
 HEADER_HIGH_EASY := "T7-10 Standard"
 HEADER_HIGH_HARD := "T7-10 Hardcore"
 
 Gui, Add, ComboBox, vHeader1 W120 X5 Y%yVar%, %HEADER_LOW_EASY%||
-Gui, Add, ComboBox, vHeader2 W120 X128 Y%yVar%, %HEADER_LOW_HARD%||
-Gui, Add, ComboBox, vHeader3 W120 X250 Y%yVar%, %HEADER_MID_EASY%||
-Gui, Add, ComboBox, vHeader4 W120 X372 Y%yVar%, %HEADER_MID_HARD%||
-Gui, Add, ComboBox, vHeader5 W120 X494 Y%yVar%, %HEADER_HIGH_EASY%||
-Gui, Add, ComboBox, vHeader6 W120 X616 Y%yVar%, %HEADER_HIGH_HARD%||
+;Gui, Add, ComboBox, vHeader2 W120 X128 Y%yVar%, %HEADER_LOW_HARD%||
+Gui, Add, ComboBox, vHeader3 W120 X128 Y%yVar%, %HEADER_MID_EASY%||
+Gui, Add, ComboBox, vHeader4 W120 X250 Y%yVar%, %HEADER_MID_HARD%||
+Gui, Add, ComboBox, vHeader5 W120 X372 Y%yVar%, %HEADER_HIGH_EASY%||
+Gui, Add, ComboBox, vHeader6 W120 X494 Y%yVar%, %HEADER_HIGH_HARD%||
 
-Gui, Add, Checkbox, vLockMaps gCheckLockMaps X739 Y%yVar%, Lock lists
+Gui, Add, Checkbox, vLockMaps gCheckLockMaps X617 Y%yVar%, Lock lists
 
 yVar+=35
 
 Loop 10 {
 	Gui, Add, ComboBox, vLOW_EASY%A_Index% W120 X5 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vLOW_HARD%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vMID_EASY%A_Index% W120 X250 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vMID_HARD%A_Index% W120 X372 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vHIGH_EASY%A_Index% W120 X494 Y%yVar% gSaveList R50, %MissionList%
-	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W120 X616 Y%yVar% gSaveList R50, %MissionList%
+	;Gui, Add, ComboBox, vLOW_HARD%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vMID_EASY%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vMID_HARD%A_Index% W120 X250 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vHIGH_EASY%A_Index% W120 X372 Y%yVar% gSaveList R50, %MissionList%
+	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W120 X494 Y%yVar% gSaveList R50, %MissionList%
 	yVar+=3
-	Gui, Add, Text, vCD%A_Index% X739 Y%yVar% W100, 00:00
+	Gui, Add, Text, vCD%A_Index% X617 Y%yVar% W100, 00:00
 	yVar+=5
 
 	CalcVar+=-777, minutes
@@ -90,8 +90,8 @@ Loop 10 {
 }
 Loop, Read, MISSIONS_LOW_EASY.txt
 	GuiControl, ChooseString, LOW_EASY%A_Index%, %A_LoopReadLine%
-Loop, Read, MISSIONS_LOW_HARD.txt
-	GuiControl, ChooseString, LOW_HARD%A_Index%, %A_LoopReadLine%
+;Loop, Read, MISSIONS_LOW_HARD.txt
+;	GuiControl, ChooseString, LOW_HARD%A_Index%, %A_LoopReadLine%
 Loop, Read, MISSIONS_MID_EASY.txt
 	GuiControl, ChooseString, MID_EASY%A_Index%, %A_LoopReadLine%
 Loop, Read, MISSIONS_MID_HARD.txt
@@ -101,10 +101,10 @@ Loop, Read, MISSIONS_HIGH_EASY.txt
 Loop, Read, MISSIONS_HIGH_HARD.txt
 	GuiControl, ChooseString, HIGH_HARD%A_Index%, %A_LoopReadLine%
 yVar+=-4
-Gui, Add, Edit, X5 W30 vMinBox Y%yVar% Number, %OffsetVar%
-Gui, Add, Edit, X39 W30 vSecBox Y%yVar% Number, %OffsecVar%
+Gui, Add, Edit, X5 W25 vMinBox Y%yVar% Number, %OffsetVar%
+Gui, Add, Edit, X31 W25 vSecBox Y%yVar% Number, %OffsecVar%
 yVar--
-Gui, Add, Button, X70 W225 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Minutes/Seconds)
+Gui, Add, Button, X58 W160 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Min/Sec)
 
 IfNotExist Pos.txt
 {
@@ -113,7 +113,7 @@ IfNotExist Pos.txt
 }
 FileReadLine, xPos, Pos.txt, 1
 FileReadLine, yPos, Pos.txt, 2
-Gui, Show, W820 H395 X%xPos% Y%yPos%, %TrackerName%
+Gui, Show, W700 H395 X%xPos% Y%yPos%, %TrackerName%
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
@@ -151,7 +151,7 @@ AZ(x){
 
 SaveList:
 	FileDelete, MISSIONS_LOW_EASY.txt
-	FileDelete, MISSIONS_LOW_HARD.txt
+	;FileDelete, MISSIONS_LOW_HARD.txt
 	FileDelete, MISSIONS_MID_EASY.txt
 	FileDelete, MISSIONS_MID_HARD.txt
 	FileDelete, MISSIONS_HIGH_EASY.txt
@@ -159,8 +159,8 @@ SaveList:
 	Loop 10 {
 		GuiControlGet TempVar,, LOW_EASY%A_Index%
 		FileAppend %TempVar%`n,MISSIONS_LOW_EASY.txt
-		GuiControlGet TempVar,, LOW_HARD%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_LOW_HARD.txt
+		;GuiControlGet TempVar,, LOW_HARD%A_Index%
+		;FileAppend %TempVar%`n,MISSIONS_LOW_HARD.txt
 		GuiControlGet TempVar,, MID_EASY%A_Index%
 		FileAppend %TempVar%`n,MISSIONS_MID_EASY.txt
 		GuiControlGet TempVar,, MID_HARD%A_Index%
@@ -185,7 +185,7 @@ ClearList:
 		IfMsgBox Yes
 			Loop 10	{
 				GuiControl, Choose, LOW_EASY%A_Index%, 0
-				GuiControl, Choose, LOW_HARD%A_Index%, 0
+				;GuiControl, Choose, LOW_HARD%A_Index%, 0
 				GuiControl, Choose, MID_EASY%A_Index%, 0
 				GuiControl, Choose, MID_HARD%A_Index%, 0
 				GuiControl, Choose, HIGH_EASY%A_Index%, 0
@@ -199,11 +199,9 @@ return
 /*
 SetTimeOffsetButton:
 	InputBox, OffsetVar, Set Time Offset, Please input timer offset in seconds:
-	
-	if ErrorLevel
-		return
-	else
-
+	if !ErrorLevel
+		GoSub, SetTimeOffset
+return
 */
 
 SetTimeOffset:
@@ -270,7 +268,7 @@ CheckLockMaps:
 	{
 		Loop 10 {
 			GuiControl, Disable, LOW_EASY%A_Index%
-			GuiControl, Disable, LOW_HARD%A_Index%
+			;GuiControl, Disable, LOW_HARD%A_Index%
 			GuiControl, Disable, MID_EASY%A_Index%
 			GuiControl, Disable, MID_HARD%A_Index%
 			GuiControl, Disable, HIGH_EASY%A_Index%
@@ -281,7 +279,7 @@ CheckLockMaps:
 	{
 		Loop 10 {
 			GuiControl, Enable, LOW_EASY%A_Index%
-			GuiControl, Enable, LOW_HARD%A_Index%
+			;GuiControl, Enable, LOW_HARD%A_Index%
 			GuiControl, Enable, MID_EASY%A_Index%
 			GuiControl, Enable, MID_HARD%A_Index%
 			GuiControl, Enable, HIGH_EASY%A_Index%
