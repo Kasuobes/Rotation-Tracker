@@ -5,7 +5,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 global TrackerName:="Armored Warfare PvE Mission Rotation Tracker"
-global TrackerVersion:="2.2"
+global TrackerVersion:="v2.2"
 
 global OffsetVar:=0	;Controls how many minutes the time is offset
 global OffsecVar:=0	;Controls how many seconds the time is offset
@@ -15,7 +15,7 @@ IfExist Offset.txt
 	FileReadLine, OffsecVar, Offset.txt, 2
 }
 
-global OpacityVar:=255 ;Controls window opacity
+;global OpacityVar:=255 ;Controls window opacity
 
 MissionList=
 IfNotExist Missions.txt	
@@ -34,7 +34,8 @@ Loop, Read, Missions.txt	;Missions.txt contains a list of all missions seperated
 ;Menu items
 
 ;Menu, EditMenu, Add, &Set Time Offset, SetTimeOffsetButton
-Menu, EditMenu, Add, &Set Opacity, SetOpacityButton
+;Menu, EditMenu, Add, &Set Opacity, SetOpacityButton
+;Menu, EditMenu, Add, &Toggle Overlay Mode, OverlayButton
 Menu, EditMenu, Add, &Clear All Missions, ClearList
 
 Menu, HelpMenu, Add, &Help, HelpButton
@@ -229,6 +230,10 @@ SetTimeOffset:
 	GoSub EverySecond
 return
 
+;OverlayButton:
+;return
+
+/*
 SetOpacityButton:
 	InputBox, OpacityVar, Set Opacity, Please input an opacity value (150-255):		
 	if(OpacityVar < 150)
@@ -262,6 +267,9 @@ SetOpacity:
 	GuiControl,, OpacityBox, %OpacityVar%
 	WinSet, Transparent, %OpacityVar%, %TrackerName%
 return
+
+*/
+
 CheckLockMaps:
 	GuiControlGet, LockMaps
 	if(LockMaps)
