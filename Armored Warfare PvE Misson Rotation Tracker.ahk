@@ -102,10 +102,13 @@ Loop, Read, MISSIONS_HIGH_EASY.txt
 Loop, Read, MISSIONS_HIGH_HARD.txt
 	GuiControl, ChooseString, HIGH_HARD%A_Index%, %A_LoopReadLine%
 yVar+=2
-Gui, Add, Edit, X5 W25 vMinBox Y%yVar% Number, %OffsetVar%
-Gui, Add, Edit, X31 W25 vSecBox Y%yVar% Number, %OffsecVar%
+
+Gui, Add, Edit, X5 W45 vMinBox Y%yVar% Number, %OffsetVar%
+Gui, Add, UpDown, Range-6-6 gSetTimeOffset Wrap, %OffsetVar%
+Gui, Add, Edit, X51 W45 vSecBox Y%yVar% Number, %OffsecVar%
+Gui, Add, UpDown, Range0-59 gSetTimeOffset Wrap, %OffsecVar%
 yVar--
-Gui, Add, Button, X58 W160 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Min/Sec)
+Gui, Add, Button, X98 W160 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Min/Sec)
 
 IfNotExist Pos.txt
 {
