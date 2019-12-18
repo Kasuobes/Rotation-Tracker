@@ -13,15 +13,15 @@ FAQ
 --
 **What language is the tracker written in?**
 
-The tracker is completely based on ![AutoHotkey](https://www.autohotkey.com/).
+The tracker is completely based on [AutoHotkey](https://www.autohotkey.com/).
 
 **How do I run it?**
 
-Download the latest binary package (the .exe program) on the ![release page](https://github.com/Kasuobes/Rotation-Tracker/releases) and just run it. That's it! No installation or other dependencies required!
+Download the latest binary package (the .exe program) on the [release page](https://github.com/Kasuobes/Rotation-Tracker/releases) and just run it. That's it! No installation or other dependencies required!
 
 **Are there any instructions?**
 
-The help menu should tell you everything. If there are still questions, please ![create a new issue](https://github.com/Kasuobes/Rotation-Tracker/issues/new) and I'll answer as soon as I can!
+The help menu should tell you everything. If there are still questions, please [create a new issue](https://github.com/Kasuobes/Rotation-Tracker/issues/new) and I'll answer as soon as I can!
 
 **Why did you make this?**
 
@@ -33,7 +33,7 @@ Not at all! The tracker does not interact with the game client in any way, and i
 
 **I found a bug/have some suggestions! How do I tell you?**
 
-![Create a new issue](https://github.com/Kasuobes/Rotation-Tracker/issues/new) and share your thoughts!
+[Create a new issue](https://github.com/Kasuobes/Rotation-Tracker/issues/new) and share your thoughts!
 
 **Can I fork the tracker and develop it on my own?**
 
