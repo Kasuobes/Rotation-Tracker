@@ -5,35 +5,43 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 global TrackerName:="Armored Warfare PvE Mission Rotation Tracker"
-global TrackerVersion:="v2.2"
+global TrackerVersion:="v2.3"
 
-global OffsetVar:=0	;Controls how many minutes the time is offset
-global OffsecVar:=0	;Controls how many seconds the time is offset
-IfExist Offset.txt
+If Not (InStr(FileExist(config), "D"))
+	FileCreateDir, config
+
+IfNotExist, config\cfg.ini
 {
-	FileReadLine, OffsetVar, Offset.txt, 1
-	FileReadLine, OffsecVar, Offset.txt, 2
+	IniWrite, 0, config\cfg.ini, Timer Offset, OffsetMinVar
+	IniWrite, 0, config\cfg.ini, Timer Offset, OffsetSecVar
+	IniWrite, 0, config\cfg.ini, Window Position, xPos
+	IniWrite, 0, config\cfg.ini, Window Position, yPos
 }
 
-;global OpacityVar:=255 ;Controls window opacity
+;Controls timer offset
+Global OffsetMinVar := 0
+IniRead, OffsetMinVar, config\cfg.ini, Timer Offset, OffsetMinVar,
+Global OffsetSecVar := 0
+IniRead, OffsetSecVar, config\cfg.ini, Timer Offset, OffsetSecVar,
+
+;Global OpacityVar:=255 ;Controls window opacity
 
 MissionList=
-IfNotExist Missions.txt	
+IfNotExist config/Missions.txt
 {
-	FileAppend, Albatross`nAnvil`nBanshee`nBasilisk`nCavalry`nCerberus`nDire Wolf, Missions.txt
-	FileAppend,`nErebos`nFrostbite`nGhost Hunter`nHarbinger`nHydra`nKodiak`nLeviathan, Missions.txt
-	FileAppend,`nLife Jacket`nMeltdown`nOnyx`nPerseus, Missions.txt
-	FileAppend,`nPhalanx`nPrometheus`nQuarterback`nRaiding Party`nRed Opossum`nRicochet, Missions.txt
-	FileAppend,`nRolling Thunder`nSapphire`nScorpio`nSnake Bite`nSpearhead, Missions.txt
-	FileAppend,`nStarry Night`nStormy Winter`nTiger Claw`nTsunami`nUmbrella, Missions.txt
-	FileAppend,`nWatchdog`nWildfire`nZero Hour, Missions.txt
+	FileAppend, Albatross`nAnvil`nBanshee`nBasilisk`nCavalry`nCerberus`nDire Wolf, config/Missions.txt
+	FileAppend,`nErebos`nFrostbite`nGhost Hunter`nHarbinger`nHydra`nKodiak`nLeviathan, config/Missions.txt
+	FileAppend,`nLife Jacket`nMeltdown`nOnyx`nPerseus, config/Missions.txt
+	FileAppend,`nPhalanx`nPrometheus`nQuarterback`nRaiding Party`nRed Opossum`nRicochet, config/Missions.txt
+	FileAppend,`nRolling Thunder`nSapphire`nScorpio`nSnake Bite`nSpearhead, config/Missions.txt
+	FileAppend,`nStarry Night`nStormy Winter`nTiger Claw`nTsunami`nUmbrella, config/Missions.txt
+	FileAppend,`nWatchdog`nWildfire`nZero Hour, config/Missions.txt
 }
-Loop, Read, Missions.txt	;Missions.txt contains a list of all missions seperated by newlines
+Loop, Read, config/Missions.txt	;Missions.txt contains a list of all missions separated by newlines
 	MissionList=%MissionList%%A_LoopReadLine%|
 
 ;Menu items
 
-;Menu, EditMenu, Add, &Set Time Offset, SetTimeOffsetButton
 ;Menu, EditMenu, Add, &Set Opacity, SetOpacityButton
 ;Menu, EditMenu, Add, &Toggle Overlay Mode, OverlayButton
 Menu, EditMenu, Add, &Clear All Missions, ClearList
@@ -50,13 +58,10 @@ Gui, Menu, MenuBar
 
 Gui, Font, s10
 yVar:=4
-newTime := A_Hour * 60 + A_Min - OffsetVar + 150
-if(OffsecVar > 45)
-	newTime--
+newTime := A_Hour * 60 + A_Min - OffsetMinVar + 150
 Transform, rVar, Mod, %newTime%, 30
-CalcVar =
-CalcVar += -%rVar%, minutes
 
+;Headers
 HEADER_LOW_EASY := "T1-3 Standard"
 ;HEADER_LOW_HARD := "T1-3 Hardcore"
 HEADER_MID_EASY := "T4-6 Standard"
@@ -70,60 +75,66 @@ Gui, Add, ComboBox, vHeader3 W120 X128 Y%yVar%, %HEADER_MID_EASY%||
 Gui, Add, ComboBox, vHeader4 W120 X250 Y%yVar%, %HEADER_MID_HARD%||
 Gui, Add, ComboBox, vHeader5 W120 X372 Y%yVar%, %HEADER_HIGH_EASY%||
 Gui, Add, ComboBox, vHeader6 W120 X494 Y%yVar%, %HEADER_HIGH_HARD%||
-
+;Lock lists button
 Gui, Add, Checkbox, vLockMaps gCheckLockMaps X617 Y%yVar%, Lock lists
 
 yVar+=27
 
+;Populate and read from rotation lists
 Loop 10 {
 	Gui, Add, ComboBox, vLOW_EASY%A_Index% W120 X5 Y%yVar% gSaveList R50, %MissionList%
-	;Gui, Add, ComboBox, vLOW_HARD%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T1-3 Standard, %A_Index%, %A_Space%
+	GuiControl, ChooseString, LOW_EASY%A_Index%, %TempVar%
+	
+	/*
+	Gui, Add, ComboBox, vLOW_HARD%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T1-3 Hardcore, %A_Index%, %A_Space%
+	GuiControl, ChooseString, LOW_HARD%A_Index%, %TempVar%	
+	*/
+	
 	Gui, Add, ComboBox, vMID_EASY%A_Index% W120 X128 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T4-6 Standard, %A_Index%, %A_Space%
+	GuiControl, ChooseString, MID_EASY%A_Index%, %TempVar%
+	
 	Gui, Add, ComboBox, vMID_HARD%A_Index% W120 X250 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T3-6 Hardcore, %A_Index%, %A_Space%
+	GuiControl, ChooseString, MID_HARD%A_Index%, %TempVar%
+	
 	Gui, Add, ComboBox, vHIGH_EASY%A_Index% W120 X372 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T7-10 Standard, %A_Index%, %A_Space%
+	GuiControl, ChooseString, HIGH_EASY%A_Index%, %TempVar%
+	
 	Gui, Add, ComboBox, vHIGH_HARD%A_Index% W120 X494 Y%yVar% gSaveList R50, %MissionList%
+	IniRead, TempVar, config/rotation_lists.ini, T7-10 Hardcore, %A_Index%, %A_Space%
+	GuiControl, ChooseString, HIGH_HARD%A_Index%, %TempVar%
+	
 	yVar+=3
 	Gui, Add, Text, vCD%A_Index% X617 Y%yVar% W100, 00:00
-	yVar+=5
 
-	CalcVar+=-777, minutes
-	yVar+=15
+	yVar+=20
 }
-Loop, Read, MISSIONS_LOW_EASY.txt
-	GuiControl, ChooseString, LOW_EASY%A_Index%, %A_LoopReadLine%
-;Loop, Read, MISSIONS_LOW_HARD.txt
-;	GuiControl, ChooseString, LOW_HARD%A_Index%, %A_LoopReadLine%
-Loop, Read, MISSIONS_MID_EASY.txt
-	GuiControl, ChooseString, MID_EASY%A_Index%, %A_LoopReadLine%
-Loop, Read, MISSIONS_MID_HARD.txt
-	GuiControl, ChooseString, MID_HARD%A_Index%, %A_LoopReadLine%
-Loop, Read, MISSIONS_HIGH_EASY.txt
-	GuiControl, ChooseString, HIGH_EASY%A_Index%, %A_LoopReadLine%
-Loop, Read, MISSIONS_HIGH_HARD.txt
-	GuiControl, ChooseString, HIGH_HARD%A_Index%, %A_LoopReadLine%
-yVar+=2
 
-Gui, Add, Edit, X5 W45 vMinBox Y%yVar% Number, %OffsetVar%
-Gui, Add, UpDown, Range-6-6 gSetTimeOffset Wrap, %OffsetVar%
-Gui, Add, Edit, X51 W45 vSecBox Y%yVar% Number, %OffsecVar%
-Gui, Add, UpDown, Range0-59 gSetTimeOffset Wrap, %OffsecVar%
+;Timer offset stuff
+yVar+=2
+Gui, Add, Edit, X5 W45 vMinBox Y%yVar% Number, %OffsetMinVar%
+Gui, Add, UpDown, Range-6-6 gSetTimeOffset Wrap, %OffsetMinVar%
+Gui, Add, Edit, X51 W45 vSecBox Y%yVar% Number, %OffsetSecVar%
+Gui, Add, UpDown, Range0-59 gSetTimeOffset Wrap, %OffsetSecVar%
 yVar--
 Gui, Add, Button, X98 W160 H25 Y%yVar% gSetTimeOffset, Set Time Offset (Min/Sec)
 
-IfNotExist Pos.txt
-{
-	FileAppend, 0`n, Pos.txt
-	FileAppend, 0, Pos.txt
-}
-FileReadLine, xPos, Pos.txt, 1
-FileReadLine, yPos, Pos.txt, 2
+;Let slip the dogs of war
+IniRead, xPos, config\cfg.ini, Window Position, xPos, 0
+IniRead, yPos, config\cfg.ini, Window Position, yPos, 0
 Gui, Show, W700 H290 X%xPos% Y%yPos%, %TrackerName%
 GoSub EverySecond
 SetTimer EverySecond, 1000
 return
 
+;Subroutines
+
 EverySecond:
-newTime := A_Hour * 3600 + A_Min * 60 + A_Sec - OffsetVar * 60 - OffsecVar + 9000
+newTime := A_Hour * 3600 + A_Min * 60 + A_Sec - OffsetMinVar * 60 - OffsetSecVar + 9000
 Loop 10 {
 	newTime -= 180
 	Transform, rVar, Mod, %newTime%, 1800
@@ -136,7 +147,7 @@ Loop 10 {
 		GuiControl, Font, CD%A_Index%
 	}
 	else{
-		cVar-=180
+		cVar -= 180
 		nextTime =
 		nextTime += %cVar%, seconds
 		FormatTime, nextTime, %nextTime%, HH:mm
@@ -154,25 +165,19 @@ AZ(x){
 }
 
 SaveList:
-	FileDelete, MISSIONS_LOW_EASY.txt
-	;FileDelete, MISSIONS_LOW_HARD.txt
-	FileDelete, MISSIONS_MID_EASY.txt
-	FileDelete, MISSIONS_MID_HARD.txt
-	FileDelete, MISSIONS_HIGH_EASY.txt
-	FileDelete, MISSIONS_HIGH_HARD.txt
 	Loop 10 {
 		GuiControlGet TempVar,, LOW_EASY%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_LOW_EASY.txt
+		IniWrite, %TempVar%, config/rotation_lists.ini, T1-3 Standard, %A_Index%
 		;GuiControlGet TempVar,, LOW_HARD%A_Index%
-		;FileAppend %TempVar%`n,MISSIONS_LOW_HARD.txt
+		;IniWrite, %TempVar%, config/rotation_lists.ini, T1-3 Hardcore, %A_Index%
 		GuiControlGet TempVar,, MID_EASY%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_MID_EASY.txt
+		IniWrite, %TempVar%, config/rotation_lists.ini, T4-6 Standard, %A_Index%
 		GuiControlGet TempVar,, MID_HARD%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_MID_HARD.txt
+		IniWrite, %TempVar%, config/rotation_lists.ini, T3-6 Hardcore, %A_Index%
 		GuiControlGet TempVar,, HIGH_EASY%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_HIGH_EASY.txt
+		IniWrite, %TempVar%, config/rotation_lists.ini, T7-10 Standard, %A_Index%
 		GuiControlGet TempVar,, HIGH_HARD%A_Index%
-		FileAppend %TempVar%`n,MISSIONS_HIGH_HARD.txt
+		IniWrite, %TempVar%, config/rotation_lists.ini, T7-10 Hardcore, %A_Index%
 	}
 return
 
@@ -181,7 +186,7 @@ ClearList:
 	if(LockMaps)
 	{
 		MsgBox Maps are locked! Unlock maps to clear maps!
-		
+
 	}
 	else
 	{
@@ -195,42 +200,24 @@ ClearList:
 				GuiControl, Choose, HIGH_EASY%A_Index%, 0
 				GuiControl, Choose, HIGH_HARD%A_Index%, 0
 			}
-			GuiControlGet OffsetVar,, MinBox
-			GuiControlGet OffsecVar,, SecBox
 	}
 return
-
-/*
-SetTimeOffsetButton:
-	InputBox, OffsetVar, Set Time Offset, Please input timer offset in seconds:
-	if !ErrorLevel
-		GoSub, SetTimeOffset
-return
-*/
 
 SetTimeOffset:
-	FileDelete, Offset.txt
-	GuiControlGet OffsetVar,, MinBox
-	GuiControlGet OffsecVar,, SecBox
-	if(OffsetVar > 29)
+	GuiControlGet OffsetMinVar,, MinBox
+	GuiControlGet OffsetSecVar,, SecBox
+	if(OffsetMinVar > 29)
 	{
-		Transform, OffsetVar, Mod, %OffsetVar%, 30
-		GuiControl,,MinBox,%OffsetVar%
+		Transform, OffsetMinVar, Mod, %OffsetMinVar%, 30
+		GuiControl,,MinBox,%OffsetMinVar%
 	}
-	if(OffsecVar > 59)
+	if(OffsetSecVar > 59)
 	{
-		Transform, OffsecVar, Mod, %OffsecVar%, 60
-		GuiControl,,SecBox,%OffsecVar%
+		Transform, OffsetSecVar, Mod, %OffsetSecVar%, 60
+		GuiControl,,SecBox,%OffsetSecVar%
 	}
-	FileAppend, %OffsetVar%`n%OffsecVar%, Offset.txt
-
-	newTime := A_Hour * 60 + A_Min - OffsetVar + 150
-	if(OffsecVar > 45)
-		newTime--
-	Transform, rVar, Mod, %newTime%, 30
-	CalcVar =
-	CalcVar += -%rVar%, minutes
-	GoSub EverySecond
+	IniWrite, %OffsetMinVar%, config\cfg.ini, Timer Offset, OffsetMinVar
+	IniWrite, %OffsetSecVar%, config\cfg.ini, Timer Offset, OffsetSecVar
 return
 
 ;OverlayButton:
@@ -238,7 +225,7 @@ return
 
 /*
 SetOpacityButton:
-	InputBox, OpacityVar, Set Opacity, Please input an opacity value (150-255):		
+	InputBox, OpacityVar, Set Opacity, Please input an opacity value (150-255):
 	if(OpacityVar < 150)
 	{
 		OpacityVar:=150
@@ -246,12 +233,12 @@ SetOpacityButton:
 	else if(OpacityVar > 255)
 	{
 		OpacityVar:=255
-	}	
-	
+	}
+
 	if !ErrorLevel
 		GoSub, SetOpacity
 
-return		
+return
 
 SetOpacity:
 	if(OpacityVar < 150) ;extra sanity check
@@ -301,14 +288,16 @@ return
 
 HelpButton:
 	MessageText=Use the drop-down lists to select the missions that are currently active.
+	MessageText=%MessageText%`nYou can also type anything in the list boxes if you so desire.
 	MessageText=%MessageText%`nAny changes made to the drop-down lists are automatically saved.
-	MessageText=%MessageText%`n`nTo adjust the time to match the contract deadline timer:
+	MessageText=%MessageText%`nUse the "Lock lists" checkbox to lock or unlock the lists.
+	MessageText=%MessageText%`n`nYou can use "Clear All Missions" under Edit when the map rotation
+	MessageText=%MessageText%`nchanges to clear all existing rotation lists.
+	MessageText=%MessageText%`n`nTo adjust the time to match the mission deadline timer:
 	MessageText=%MessageText%`n1) Enter a minute value in the 1st bottom left input text box
 	MessageText=%MessageText%`n2) Enter a second value in the 2nd bottom left input text box
 	MessageText=%MessageText%`n3) Press the "Set Time Offset" button
-	MessageText=%MessageText%`n`nYou must press the "Clear All Missions" button when the map rotation
-	MessageText=%MessageText%`nchanges to a new set of missions in order to properly offset the time.
-	MessageText=%MessageText%`n`nEdit the Missions.txt file in order to add new missions.
+	MessageText=%MessageText%`n`nEdit the Missions.txt file in the config directory to add new missions.
 	MsgBox,,Help, %MessageText%
 return
 
@@ -316,6 +305,10 @@ AboutButton:
 	MessageText=%TrackerName% %TrackerVersion%
 	MessageText=%MessageText%`n© 2016-2019 Wiser Guy
 	MessageText=%MessageText%`n© 2019 Haswell (Kasuobes)
+	MessageText=%MessageText%`n`nContributors & Supporters:
+	MessageText=%MessageText%`ngrassman66
+	MessageText=%MessageText%`nTheHawkGer
+	MessageText=%MessageText%`nXJDHDR
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
 	MessageText=%MessageText%`nit under the terms of the GNU General Public License as published by
 	MessageText=%MessageText%`nthe Free Software Foundation, either version 3 of the License, or
@@ -331,7 +324,6 @@ return
 
 GuiClose:
 	WinGetPos, tx, ty,,,%TrackerName%
-	FileDelete, Pos.txt
-	FileAppend, %tx%`n, Pos.txt
-	FileAppend, %ty%, Pos.txt	
+	IniWrite, %tx%, config\cfg.ini, Window Position, xPos
+	IniWrite, %ty%, config\cfg.ini, Window Position, yPos
 ExitApp

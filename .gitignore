@@ -1,3 +1,5 @@
 #ignore dynamic files and other stuff
 *.txt
 *.exe
+*.ini
+cfg/
