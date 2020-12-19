@@ -5,7 +5,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 global TrackerName:="Armored Warfare PvE Mission Rotation Tracker"
-global TrackerVersion:="v2.3"
+global TrackerVersion:="v2.4"
 
 If Not (InStr(FileExist(config), "D"))
 	FileCreateDir, config
@@ -309,6 +309,9 @@ AboutButton:
 	MessageText=%MessageText%`ngrassman66
 	MessageText=%MessageText%`nTheHawkGer
 	MessageText=%MessageText%`nXJDHDR
+	MessageText=%MessageText%`KonshoIro (Aiiro)
+	MessageText=%MessageText%`tomcat_SRB
+	MessageText=%MessageText%`ArmoredLabs Community
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
 	MessageText=%MessageText%`nit under the terms of the GNU General Public License as published by
 	MessageText=%MessageText%`nthe Free Software Foundation, either version 3 of the License, or
