@@ -309,9 +309,9 @@ AboutButton:
 	MessageText=%MessageText%`ngrassman66
 	MessageText=%MessageText%`nTheHawkGer
 	MessageText=%MessageText%`nXJDHDR
-	MessageText=%MessageText%`KonshoIro (Aiiro)
-	MessageText=%MessageText%`tomcat_SRB
-	MessageText=%MessageText%`ArmoredLabs Community
+	MessageText=%MessageText%`nKonshoIro (Aiiro)
+	MessageText=%MessageText%`ntomcat_SRB
+	MessageText=%MessageText%`nArmoredLabs Community
 	MessageText=%MessageText%`n`nThis program is free software: you can redistribute it and/or modify
 	MessageText=%MessageText%`nit under the terms of the GNU General Public License as published by
 	MessageText=%MessageText%`nthe Free Software Foundation, either version 3 of the License, or
